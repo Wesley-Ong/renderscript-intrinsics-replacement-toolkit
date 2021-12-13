@@ -21,8 +21,6 @@ import android.graphics.Canvas
 import android.renderscript.Element
 import android.renderscript.RenderScript
 import com.google.android.renderscript.Range2d
-import com.google.android.renderscript.Rgba3dArray
-import com.google.android.renderscript.YuvFormat
 import java.nio.ByteBuffer
 import java.util.Random
 import kotlin.math.floor
@@ -324,47 +322,6 @@ fun randomCube(seed: Long, cubeSize: Dimension): ByteArray {
     return ByteArray(cubeSize.sizeX * cubeSize.sizeY * cubeSize.sizeZ * 4) {
         (r.nextInt(255) - 128).toByte()
     }
-}
-
-/**
- * Create the identity cube, i.e. one that if used in Lut3d, the output is the same as the input
- */
-@ExperimentalUnsignedTypes
-fun identityCube(cubeSize: Dimension): ByteArray {
-    val data = ByteArray(cubeSize.sizeX * cubeSize.sizeY * cubeSize.sizeZ * 4)
-    val cube = Rgba3dArray(data, cubeSize.sizeX, cubeSize.sizeY, cubeSize.sizeZ)
-    for (z in 0 until cubeSize.sizeZ) {
-        for (y in 0 until cubeSize.sizeY) {
-            for (x in 0 until cubeSize.sizeX) {
-                cube[x, y, z] =
-                    byteArrayOf(
-                        (x * 255 / (cubeSize.sizeX - 1)).toByte(),
-                        (y * 255 / (cubeSize.sizeY - 1)).toByte(),
-                        (z * 255 / (cubeSize.sizeZ - 1)).toByte(),
-                        (255).toByte()
-                    )
-            }
-        }
-    }
-    return data
-}
-
-fun randomYuvArray(seed: Long, sizeX: Int, sizeY: Int, format: YuvFormat): ByteArray {
-    // YUV formats are not well defined for odd dimensions
-    require(sizeX % 2 == 0 && sizeY % 2 == 0)
-    val halfSizeX = sizeX / 2
-    val halfSizeY = sizeY / 2
-    var totalSize = 0
-    when (format) {
-        YuvFormat.YV12 -> {
-            val strideX = roundUpTo16(sizeX)
-            totalSize = strideX * sizeY + roundUpTo16(strideX / 2) * halfSizeY * 2
-        }
-        YuvFormat.NV21 -> totalSize = sizeX * sizeY + halfSizeX * halfSizeY * 2
-        else -> require(false) { "Unknown YUV format $format" }
-    }
-
-    return randomByteArray(seed, totalSize, 1, 1)
 }
 
 /**

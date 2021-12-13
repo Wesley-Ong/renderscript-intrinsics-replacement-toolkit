@@ -10,8 +10,6 @@ android {
     defaultConfig {
         minSdkVersion 16
         targetSdkVersion 30
-        versionCode 1
-        versionName "1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles "consumer-rules.pro"
@@ -40,6 +38,7 @@ android {
             path file('src/main/cpp/CMakeLists.txt')
         }
     }
+    ndkVersion '21.4.7075529'
     //ndkVersion '22.0.7026061'
 }
 
